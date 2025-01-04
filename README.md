@@ -19,7 +19,12 @@ You can run commands on the device using the Arduino IDE **Serial Monitor**.
 6. If you want to see News, you must get Newsapi.org [API Key](https://newsapi.org)
 
 The **get** command returns the following string in JSON format:
-"{"tz":"EST5EDT,M3.2.0,M11.1.0","matrix_pin":"14","stations":[{"ssid":"your_ssid1","psk":"your_password1"},{"ssid":"your_ssid2","psk":"your_password2"},{"ssid":"your_ssid3","psk":"your_password3"}],"news_api_key": "your_newsapi.org_api_key","show_time":"true","show_date":"true","show_weather":"true","show_news":"true"}"
+
+{"tz":"EST5EDT,M3.2.0,M11.1.0","matrix_pin":"14","stations":[{"ssid":"your_ssid1","psk":"your_password1"},{"ssid":"your_ssid2","psk":"your_password2"},{"ssid":"your_ssid3","psk":"your_password3"}],"news_api_key": "your_newsapi.org_api_key","show_time":"true","show_date":"true","show_weather":"true","show_news":"true"}
+
 Copy this string to Notepad end edit it:
 1. Set your [Time Zone](https://github.com/esp8266/Arduino/blob/master/cores/esp8266/TZ.h)
 2. Set Matrix Pin (14 by dafault)
+3. Set few SSIDs and Passwords. (Not always 3, but up to 5. May be 1 or 2.)
+4. Set Newsapi.org [API Key](https://newsapi.org)
+5. Set true/false values for what to show: Time, Date, Local Weather, News
