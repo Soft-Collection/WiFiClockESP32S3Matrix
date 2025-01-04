@@ -11,9 +11,15 @@ Shows Time, Date, Local Weather and News.
 
 ## Notes
 You can run commands on the device using the Arduino IDE **Serial Monitor**.
-1. Use **help** to get description of all commands.
-2. Use **get** to get all data in JSON format.
+1. Use **help** command to get description of all commands.
+2. Use **get** command to get all data in JSON format.
 3. Enter the edited JSON string you have got using **get** command.
 4. See your [Time Zone](https://github.com/esp8266/Arduino/blob/master/cores/esp8266/TZ.h)
 5. Validate your [JSON String](https://jsonlint.com)
 6. If you want to see News, you must get Newsapi.org [API Key](https://newsapi.org)
+
+The **get** command returns the following string in JSON format:
+"{"tz":"EST5EDT,M3.2.0,M11.1.0","matrix_pin":"14","stations":[{"ssid":"your_ssid1","psk":"your_password1"},{"ssid":"your_ssid2","psk":"your_password2"},{"ssid":"your_ssid3","psk":"your_password3"}],"news_api_key": "your_newsapi.org_api_key","show_time":"true","show_date":"true","show_weather":"true","show_news":"true"}"
+Copy this string to Notepad end edit it:
+1. Set your [Time Zone](https://github.com/esp8266/Arduino/blob/master/cores/esp8266/TZ.h)
+2. Set Matrix Pin (14 by dafault)
