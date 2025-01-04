@@ -1,4 +1,4 @@
-[![WiFi Clock ESP32-S3 Matrix](http://img.youtube.com/vi/gyAnZwDX77I/0.jpg)](https://youtu.be/gyAnZwDX77I "WiFi Clock ESP32-S3 Matrix")
+[![WiFi Clock ESP32-S3 Matrix](http://img.youtube.com/vi/gyAnZwDX77I/10.jpg)](https://youtu.be/gyAnZwDX77I "WiFi Clock ESP32-S3 Matrix")
 
 # WiFi Clock ESP32-S3 Matrix
 Small WiFi Clock based on ESP32-S3 Matrix board.
