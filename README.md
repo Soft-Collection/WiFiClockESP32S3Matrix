@@ -28,3 +28,5 @@ Copy this string to Notepad end edit it:
 3. Set few SSIDs and Passwords. (Not always 3, but up to 5. May be 1 or 2.)
 4. Set Newsapi.org [API Key](https://newsapi.org)
 5. Set true/false values for what to show: Time, Date, Local Weather, News
+
+When You have done, just **copy** the edited string and **paste** it in **Serial Monitor** where you typed **get** command and press **enter**
