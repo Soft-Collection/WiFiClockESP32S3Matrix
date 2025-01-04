@@ -14,9 +14,9 @@ You can run commands on the device using the Arduino IDE Serial Monitor.
 1. Use help to get description of all commands.
 2. Use get to get all data in JSON format.
 3. Enter the edited JSON string you have got using get command.
-4. See your Time Zone [here:] (https://github.com/esp8266/Arduino/blob/master/cores/esp8266/TZ.h)
-5. Validate your JSON String [here:] (https://jsonlint.com)
-6. If you want to see News, you must get Newsapi.org API Key [here:] (https://newsapi.org)
+4. See your Time Zone [here:](https://github.com/esp8266/Arduino/blob/master/cores/esp8266/TZ.h)
+5. Validate your JSON String [here:](https://jsonlint.com)
+6. If you want to see News, you must get Newsapi.org API Key [here:](https://newsapi.org)
 
 
 [TFT_eSPI by Bodmer](https://github.com/Bodmer/TFT_eSPI) must be installed.
