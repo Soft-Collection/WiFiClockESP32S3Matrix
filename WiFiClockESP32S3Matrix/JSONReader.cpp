@@ -47,6 +47,8 @@ void JSONReader::OnPeriodExpiredResponse() {
       break;
     }
   }
+  mClient->clear();
+  mClient->stop();
   Serial.println(response);
   DeserializationError error = deserializeJson(*mJD, response);
   if (error) {
