@@ -63,8 +63,8 @@ void Config::Check() {
   inputString.trim();
   if (inputString.length()) {
     if (inputString == "help") {
-      Serial.println("1. Use help to get description of all commands.");
-      Serial.println("2. Use get to get all data in JSON format.");
+      Serial.println("1. Use help command to get description of all commands.");
+      Serial.println("2. Use get command to get all data in JSON format.");
       Serial.println("3. Enter the edited JSON string you have got using get command.");
       Serial.println("4. See your Time Zone here: https://github.com/esp8266/Arduino/blob/master/cores/esp8266/TZ.h");
       Serial.println("5. Validate your JSON String here: https://jsonlint.com");
