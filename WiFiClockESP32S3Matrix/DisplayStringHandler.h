@@ -6,11 +6,12 @@
 
 class DisplayStringHandler {
 public:
-  DisplayStringHandler(uint32_t tryToUpdateIntervalInMS, uint32_t reupdateIntervalInCycles, const char* name, const char* nextName);
+  DisplayStringHandler(uint32_t tryToUpdateIntervalInMS, uint32_t reupdateIntervalInCycles, const char* color, const char* name, const char* nextName);
   virtual ~DisplayStringHandler();
   virtual void Check();
   virtual bool IsDataUpdated();
   String GetDisplayString();
+  String GetColor();
   String GetName();
   String GetNextName();
 protected:
@@ -22,6 +23,7 @@ protected:
   uint32_t mReupdateIntervalInCycles;
   uint32_t mReupdateIntervalCycleCounter;
   String mDisplayString;
+  String mColor;
   String mName;
   String mNextName;
 };

@@ -13,12 +13,18 @@
 
 class DisplayStringManager {
 public:
-  DisplayStringManager();
+  typedef void (*dlgOnDisplayStringHandlerChanged)(void* instance);	
+public:
+  DisplayStringManager(void* instance);
   virtual ~DisplayStringManager();
   void Check();
   DisplayStringHandler* GetByName(const char* name);
   DisplayStringHandler* GetCurrent();
   void SwitchToNext();
+  void AddOnDisplayStringHandlerChanged(dlgOnDisplayStringHandlerChanged onDisplayStringHandlerChanged);
+private:
+  void* mInstance;
+  dlgOnDisplayStringHandlerChanged mOnDisplayStringHandlerChanged;
 private:
   WiFiConnection* mWiFiConnection;
   RTC* mRTC;

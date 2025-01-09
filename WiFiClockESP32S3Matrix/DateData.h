@@ -8,7 +8,7 @@
 
 class DateData : public DisplayStringHandler {
 public:
-  DateData(uint32_t tryToUpdateIntervalInMS, uint32_t reupdateIntervalInCycles, const char* name, const char* nextName);
+  DateData(uint32_t tryToUpdateIntervalInMS, uint32_t reupdateIntervalInCycles, const char* color, const char* name, const char* nextName);
   virtual ~DateData();
   bool IsDataUpdated();
 protected:

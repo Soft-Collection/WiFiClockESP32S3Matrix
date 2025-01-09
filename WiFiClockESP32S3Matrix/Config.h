@@ -21,6 +21,7 @@ public:
   String GetColor();
   //-----------------------------------
   String GetNewsApiKey();
+  String GetNewspaper();
   //-----------------------------------
   bool GetShowTime();
   bool GetShowDate();
@@ -29,7 +30,7 @@ public:
   //-----------------------------------
   void SaveData(String jsonString);
   String LoadData();
-  bool ParseJSONString(String jsonString, String* stationSSID, String* stationPSK, uint8_t& stationCount, String& myTZ, uint8_t& matrixPin, String& color, String& newsApiKey, bool& showTime, bool& showDate, bool& showWeather, bool& showNews);
+  bool ParseJSONString(String jsonString, String* stationSSID, String* stationPSK, uint8_t& stationCount, String& myTZ, uint8_t& matrixPin, String& color, String& newsApiKey, String& newspaper, bool& showTime, bool& showDate, bool& showWeather, bool& showNews);
 private:
   void Save_I8(int address, int8_t value);
   void Save_UI8(int address, uint8_t value);
@@ -61,6 +62,7 @@ private:
   String mColor;
   //-----------------------------------
   String mNewsApiKey;
+  String mNewspaper;
   //-----------------------------------
   bool mShowTime;
   bool mShowDate;

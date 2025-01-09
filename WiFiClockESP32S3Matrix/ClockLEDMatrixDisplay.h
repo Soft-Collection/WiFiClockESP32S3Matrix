@@ -21,17 +21,13 @@ private:
   void OnEndOfScrolling();
   static void OnPeriodExpiredStaticScroll(void* instance);
   void OnPeriodExpiredScroll();
-  static void OnPeriodExpiredStaticChange(void* instance);
-  void OnPeriodExpiredChange();
+  static void OnDisplayStringHandlerChangedStatic(void* instance);
+  void OnDisplayStringHandlerChanged();
 private:
   Period* mPeriodScroll;
-  Period* mPeriodChange;
   DisplayStringManager* mDisplayStringManager;
-  DisplayStringHandler* mLastDisplayStringHandler;
   Adafruit_NeoMatrix* mMatrix;
-  uint16_t mColor;
   int16_t mFirstColumnBackOffset;
-  bool mIsWaiting;
 };
 
 #endif  //ClockLEDMatrixDisplay_h

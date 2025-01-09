@@ -4,7 +4,7 @@
 #include "Config.h"
 
 ClockLEDMatrixDisplay clmd;
-DisplayStringManager dsm;
+DisplayStringManager dsm(&clmd);
 
 void setup() {
   Serial.begin(115200);

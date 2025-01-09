@@ -1,8 +1,8 @@
 #include "LocationData.h"
 #include "Config.h"
 
-LocationData::LocationData(uint32_t tryToUpdateIntervalInMS, uint32_t reupdateIntervalInCycles, const char* name, const char* nextName)
-  : JSONReader(1024, 5000, true), DisplayStringHandler(tryToUpdateIntervalInMS, reupdateIntervalInCycles, name, nextName) {
+LocationData::LocationData(uint32_t tryToUpdateIntervalInMS, uint32_t reupdateIntervalInCycles, const char* color, const char* name, const char* nextName)
+  : JSONReader(1024, 5000, true), DisplayStringHandler(tryToUpdateIntervalInMS, reupdateIntervalInCycles, color, name, nextName) {
 }
 LocationData::~LocationData() {
 }

@@ -1,8 +1,8 @@
 #include "NewsData.h"
 #include "Config.h"
 
-NewsData::NewsData(uint32_t tryToUpdateIntervalInMS, uint32_t reupdateIntervalInCycles, const char* name, const char* nextName)
-  : JSONReader(8192, 10000, true), DisplayStringHandler(tryToUpdateIntervalInMS, reupdateIntervalInCycles, name, nextName) {
+NewsData::NewsData(uint32_t tryToUpdateIntervalInMS, uint32_t reupdateIntervalInCycles, const char* color, const char* name, const char* nextName)
+  : JSONReader(8192, 10000, true), DisplayStringHandler(tryToUpdateIntervalInMS, reupdateIntervalInCycles, color, name, nextName) {
 }
 NewsData::~NewsData() {
 }
@@ -19,7 +19,7 @@ void NewsData::OnPerformUpdate() {
   if (WiFi.status() != WL_CONNECTED) return;
   ((WiFiClientSecure*)mClient)->setInsecure();
   if (!mClient->connect("newsapi.org", 443)) return;
-  String request = String("GET /v2/top-headlines?sources=fox-news&pageSize=3&apiKey=") + Cfg.GetNewsApiKey() + String(" HTTP/1.1");
+  String request = String("GET /v2/top-headlines?sources=") + Cfg.GetNewspaper() + String("&pageSize=3&apiKey=") + Cfg.GetNewsApiKey() + String(" HTTP/1.1");
   mClient->println(request.c_str());
   mClient->println("Host: newsapi.org");
   mClient->println("User-Agent: Matrix/1.0");
@@ -30,7 +30,7 @@ void NewsData::OnPerformUpdate() {
 }
 void NewsData::OnSuccessfulResponse() {
   mDisplayString = "";
-  String tempDisplayString = "News <|> ";
+  String tempDisplayString = "News >>> ";
   //-----------------------------------------------------------
   if (!(*mJD)["status"]) return;
   if (!(*mJD)["articles"]) return;
@@ -38,7 +38,7 @@ void NewsData::OnSuccessfulResponse() {
   uint8_t articlesCount = (*mJD)["articles"].size();
   for (uint8_t i = 0; i < articlesCount; i++) {
     if (!(*mJD)["articles"][i]["title"]) return;
-    tempDisplayString += (*mJD)["articles"][i]["title"].as<String>() + " <|> ";
+    tempDisplayString += (*mJD)["articles"][i]["title"].as<String>() + " >>> ";
   }
   //-----------------------------------------------------------
   if (Cfg.GetShowNews()) {

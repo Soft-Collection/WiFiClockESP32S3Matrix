@@ -9,7 +9,7 @@
 
 class NewsData : public JSONReader, public DisplayStringHandler {
 public:
-  NewsData(uint32_t tryToUpdateIntervalInMS, uint32_t reupdateIntervalInCycles, const char* name, const char* nextName);
+  NewsData(uint32_t tryToUpdateIntervalInMS, uint32_t reupdateIntervalInCycles, const char* color, const char* name, const char* nextName);
   virtual ~NewsData();
   void Check();
   bool IsDataUpdated();

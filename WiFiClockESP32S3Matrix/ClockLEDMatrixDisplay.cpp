@@ -3,14 +3,8 @@
 
 ClockLEDMatrixDisplay::ClockLEDMatrixDisplay() {
   mMatrix = NULL;
-  //---------------------------------------------
   mDisplayStringManager = NULL;
-  mLastDisplayStringHandler = NULL;
-  //---------------------------------------------
   mPeriodScroll = new Period(this, 40, true);
-  mPeriodChange = new Period(this, 0, false);
-  //---------------------------------------------
-  mIsWaiting = false;
 }
 ClockLEDMatrixDisplay::~ClockLEDMatrixDisplay() {
 }
@@ -43,22 +37,18 @@ void ClockLEDMatrixDisplay::Init() {
   mMatrix = new Adafruit_NeoMatrix(8, 8, Cfg.GetMatrixPin(), NEO_MATRIX_TOP + NEO_MATRIX_RIGHT + NEO_MATRIX_COLUMNS + NEO_MATRIX_PROGRESSIVE, NEO_GRB + NEO_KHZ800);
   //mMatrix = new Adafruit_NeoMatrix(8, 8, Cfg.GetMatrixPin(), NEO_MATRIX_BOTTOM + NEO_MATRIX_RIGHT + NEO_MATRIX_ROWS + NEO_MATRIX_PROGRESSIVE, NEO_GRB + NEO_KHZ800);
   mMatrix->begin();
-  uint32_t tempColor = strtol(Cfg.GetColor().c_str(), NULL, 16);
-  uint8_t tempColorR = (tempColor >> 16) & 0xFF;
-  uint8_t tempColorG = (tempColor >> 8) & 0xFF;
-  uint8_t tempColorB = (tempColor >> 0) & 0xFF;
-  mColor = mMatrix->Color(tempColorR, tempColorG, tempColorB);
   mFirstColumnBackOffset = mMatrix->width();
   mMatrix->setFont(&CustomFont5x7Fixed);
   mMatrix->setTextWrap(false);
   mMatrix->setBrightness(10);
-  mMatrix->setTextColor(mColor);
   mPeriodScroll->AddOnPeriodExpiredHandler(ClockLEDMatrixDisplay::OnPeriodExpiredStaticScroll);
-  mPeriodChange->AddOnPeriodExpiredHandler(ClockLEDMatrixDisplay::OnPeriodExpiredStaticChange);
 }
 void ClockLEDMatrixDisplay::Check() {
   mPeriodScroll->Check(millis());
-  mPeriodChange->Check(millis());
+}
+void ClockLEDMatrixDisplay::SetDisplayStringManager(DisplayStringManager* displayStringManager) {
+  mDisplayStringManager = displayStringManager;
+  mDisplayStringManager->AddOnDisplayStringHandlerChanged(ClockLEDMatrixDisplay::OnDisplayStringHandlerChangedStatic);
 }
 void ClockLEDMatrixDisplay::OnEndOfScrolling() {
   if (mDisplayStringManager) {
@@ -70,43 +60,33 @@ void ClockLEDMatrixDisplay::OnPeriodExpiredStaticScroll(void* instance) {
   if (clmd != NULL) clmd->OnPeriodExpiredScroll();
 }
 void ClockLEDMatrixDisplay::OnPeriodExpiredScroll() {
-  String stringToDisplay = "";
-  if (mDisplayStringManager) {
-    stringToDisplay = mDisplayStringManager->GetCurrent()->GetDisplayString();
-    if (mLastDisplayStringHandler != mDisplayStringManager->GetCurrent()) {
-      mFirstColumnBackOffset = mMatrix->width();
-      mLastDisplayStringHandler = mDisplayStringManager->GetCurrent();
-    }
-  }
-  mPeriodScroll->Reset();
+  String stringToDisplay = (mDisplayStringManager) ? mDisplayStringManager->GetCurrent()->GetDisplayString() : "";
+  //------------------------------------------------------------
   mMatrix->fillScreen(0);
   mMatrix->setCursor(mFirstColumnBackOffset, 7);
+  //------------------------------------------------------------
+  uint32_t tempColor = strtol(Cfg.GetColor().c_str(), NULL, 16);
+  if (tempColor == 0) tempColor = strtol(mDisplayStringManager->GetCurrent()->GetColor().c_str(), NULL, 16);
+  uint8_t tempColorR = (tempColor >> 16) & 0xFF;
+  uint8_t tempColorG = (tempColor >> 8) & 0xFF;
+  uint8_t tempColorB = (tempColor >> 0) & 0xFF;
+  mMatrix->setTextColor(mMatrix->Color(tempColorG, tempColorR, tempColorB));
+  //------------------------------------------------------------
   mMatrix->print(stringToDisplay);
+  //------------------------------------------------------------
   int16_t x = 0, y = 0;  // Text position
   int16_t x1, y1;        // Top-left corner of bounding box
   uint16_t w, h;
   mMatrix->getTextBounds(stringToDisplay, x, y, &x1, &y1, &w, &h);
-  int columnsInString = w;
-  if (!mIsWaiting) {
-    if (--mFirstColumnBackOffset < -columnsInString) {
-      mFirstColumnBackOffset = mMatrix->width();
-      mMatrix->setTextColor(mColor);
-      this->OnEndOfScrolling();
-    }
-    if (mFirstColumnBackOffset == 2) {
-      mIsWaiting = true;
-      mPeriodChange->Reset();
-    }
-  }
+  //------------------------------------------------------------
+  if (--mFirstColumnBackOffset < -w) this->OnEndOfScrolling();
+  //------------------------------------------------------------
   mMatrix->show();
 }
-void ClockLEDMatrixDisplay::OnPeriodExpiredStaticChange(void* instance) {
+void ClockLEDMatrixDisplay::OnDisplayStringHandlerChangedStatic(void* instance) {
   ClockLEDMatrixDisplay* clmd = (ClockLEDMatrixDisplay*)instance;
-  if (clmd != NULL) clmd->OnPeriodExpiredChange();
+  if (clmd != NULL) clmd->OnDisplayStringHandlerChanged();
 }
-void ClockLEDMatrixDisplay::OnPeriodExpiredChange() {
-  mIsWaiting = false;
-}
-void ClockLEDMatrixDisplay::SetDisplayStringManager(DisplayStringManager* displayStringManager) {
-  mDisplayStringManager = displayStringManager;
+void ClockLEDMatrixDisplay::OnDisplayStringHandlerChanged() {
+  mFirstColumnBackOffset = mMatrix->width();
 }

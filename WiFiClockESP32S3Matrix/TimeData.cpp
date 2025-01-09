@@ -2,8 +2,8 @@
 #include "CommonFunctions.h"
 #include "Config.h"
 
-TimeData::TimeData(uint32_t tryToUpdateIntervalInMS, uint32_t reupdateIntervalInCycles, const char* name, const char* nextName)
-  : DisplayStringHandler(tryToUpdateIntervalInMS, reupdateIntervalInCycles, name, nextName) {
+TimeData::TimeData(uint32_t tryToUpdateIntervalInMS, uint32_t reupdateIntervalInCycles, const char* color, const char* name, const char* nextName)
+  : DisplayStringHandler(tryToUpdateIntervalInMS, reupdateIntervalInCycles, color, name, nextName) {
 }
 TimeData::~TimeData() {
 }

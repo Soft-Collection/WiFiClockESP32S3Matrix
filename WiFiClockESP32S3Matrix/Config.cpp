@@ -5,7 +5,7 @@
 {
 	"tz": "EST5EDT,M3.2.0,M11.1.0",
 	"matrix_pin": "14",
-	"color": "0xFFFFFF",
+	"color": "000000",
 	"stations": [
 		{
 			"ssid": "your_ssid1",
@@ -21,6 +21,7 @@
 		}
 	],
   "news_api_key": "your_newsapi.org_api_key",
+  "newspaper": "fox-news",
   "show_time": "true",
   "show_date": "true",
   "show_weather": "true",
@@ -32,8 +33,9 @@ Config::Config(void) {
   mStationCount = 0;
   mMyTZ = "";
   mMatrixPin = 14;
-  mColor = "AAAAAA";
+  mColor = "000000";
   mNewsApiKey = "";
+  mNewspaper = "fox-news";
   mShowTime = false;
   mShowDate = false;
   mShowWeather = false;
@@ -46,11 +48,11 @@ bool Config::begin() {
   //Save_UI8(EEPROM_ADDRESS_INITIALIZED, 255);
   if (Load_UI8(EEPROM_ADDRESS_INITIALIZED) != 25) {
     //------------------------------------------------
-    SaveData("{\"tz\":\"EST5EDT,M3.2.0,M11.1.0\",\"matrix_pin\":\"14\",\"color\":\"AAAAAA\",\"stations\":[{\"ssid\":\"your_ssid1\",\"psk\":\"your_password1\"},{\"ssid\":\"your_ssid2\",\"psk\":\"your_password2\"},{\"ssid\":\"your_ssid3\",\"psk\":\"your_password3\"}],\"news_api_key\": \"your_newsapi.org_api_key\",\"show_time\":\"true\",\"show_date\":\"true\",\"show_weather\":\"true\",\"show_news\":\"true\"}");
+    SaveData("{\"tz\":\"EST5EDT,M3.2.0,M11.1.0\",\"matrix_pin\":\"14\",\"color\":\"000000\",\"stations\":[{\"ssid\":\"your_ssid1\",\"psk\":\"your_password1\"},{\"ssid\":\"your_ssid2\",\"psk\":\"your_password2\"},{\"ssid\":\"your_ssid3\",\"psk\":\"your_password3\"}],\"news_api_key\": \"your_newsapi.org_api_key\",\"newspaper\":\"fox-news\",\"show_time\":\"true\",\"show_date\":\"true\",\"show_weather\":\"true\",\"show_news\":\"true\"}");
     //------------------------------------------------
     Save_UI8(EEPROM_ADDRESS_INITIALIZED, 25);
   }
-  if (!ParseJSONString(LoadData(), mStationSSID, mStationPSK, mStationCount, mMyTZ, mMatrixPin, mColor, mNewsApiKey, mShowTime, mShowDate, mShowWeather, mShowNews)) {
+  if (!ParseJSONString(LoadData(), mStationSSID, mStationPSK, mStationCount, mMyTZ, mMatrixPin, mColor, mNewsApiKey, mNewspaper, mShowTime, mShowDate, mShowWeather, mShowNews)) {
     Save_UI8(EEPROM_ADDRESS_INITIALIZED, 255);
     ESP.restart();
     return false;
@@ -81,7 +83,7 @@ void Config::Check() {
       ESP.restart();
     } else {
       String tempData = LoadData();
-      if (!ParseJSONString(inputString, mStationSSID, mStationPSK, mStationCount, mMyTZ, mMatrixPin, mColor, mNewsApiKey, mShowTime, mShowDate, mShowWeather, mShowNews)) {
+      if (!ParseJSONString(inputString, mStationSSID, mStationPSK, mStationCount, mMyTZ, mMatrixPin, mColor, mNewsApiKey, mNewspaper, mShowTime, mShowDate, mShowWeather, mShowNews)) {
         SaveData(tempData);
         Serial.println("Wrong data/command provided.");
         Serial.println("Restarting...");
@@ -170,6 +172,9 @@ String Config::GetColor() {
 String Config::GetNewsApiKey(){
   return mNewsApiKey;
 }
+String Config::GetNewspaper(){
+  return mNewspaper;
+}
 bool Config::GetShowTime() {
   return mShowTime;
 }
@@ -188,7 +193,7 @@ void Config::SaveData(String jsonString) {
 String Config::LoadData() {
   return (Load_String(EEPROM_ADDRESS_DATA, EEPROM_SIZE - 10));
 }
-bool Config::ParseJSONString(String jsonString, String* stationSSID, String* stationPSK, uint8_t& stationCount, String& myTZ, uint8_t& matrixPin, String& color, String& newsApiKey, bool& showTime, bool& showDate, bool& showWeather, bool& showNews) {
+bool Config::ParseJSONString(String jsonString, String* stationSSID, String* stationPSK, uint8_t& stationCount, String& myTZ, uint8_t& matrixPin, String& color, String& newsApiKey, String& newspaper, bool& showTime, bool& showDate, bool& showWeather, bool& showNews) {
   JsonDocument jd;
   DeserializationError error = deserializeJson(jd, jsonString);
   if (error) {
@@ -241,6 +246,12 @@ bool Config::ParseJSONString(String jsonString, String* stationSSID, String* sta
     return false;
   }
   newsApiKey = jd["news_api_key"].as<String>();
+  //-----------------------------------------------------------
+  if (!jd["newspaper"]) {
+    Serial.println("No Newspaper information.");
+    return false;
+  }
+  newspaper = jd["newspaper"].as<String>();
   //-----------------------------------------------------------
   if (!jd["show_time"]) {
     Serial.println("No Show Time information.");

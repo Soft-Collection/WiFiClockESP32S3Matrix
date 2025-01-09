@@ -1,8 +1,8 @@
 #include "WiFiConnection.h"
 #include "CommonFunctions.h"
 
-WiFiConnection::WiFiConnection(uint32_t tryToUpdateIntervalInMS, uint32_t reupdateIntervalInCycles, const char* name, const char* nextName)
-  : DisplayStringHandler(tryToUpdateIntervalInMS, reupdateIntervalInCycles, name, nextName) {
+WiFiConnection::WiFiConnection(uint32_t tryToUpdateIntervalInMS, uint32_t reupdateIntervalInCycles, const char* color, const char* name, const char* nextName)
+  : DisplayStringHandler(tryToUpdateIntervalInMS, reupdateIntervalInCycles, color, name, nextName) {
 }
 WiFiConnection::~WiFiConnection() {
 }

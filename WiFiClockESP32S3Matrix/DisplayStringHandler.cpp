@@ -1,10 +1,11 @@
 #include "DisplayStringHandler.h"
 #include "CommonFunctions.h"
 
-DisplayStringHandler::DisplayStringHandler(uint32_t tryToUpdateIntervalInMS, uint32_t reupdateIntervalInCycles, const char* name, const char* nextName) {
+DisplayStringHandler::DisplayStringHandler(uint32_t tryToUpdateIntervalInMS, uint32_t reupdateIntervalInCycles, const char* color, const char* name, const char* nextName) {
   mReupdateIntervalInCycles = reupdateIntervalInCycles;
   mReupdateIntervalCycleCounter = 0;
   mDisplayString = "";
+  mColor = String(color);
   mName = String(name);
   mNextName = String(nextName);
   mPeriodUpdate = new Period(this, tryToUpdateIntervalInMS, true);
@@ -24,6 +25,9 @@ bool DisplayStringHandler::IsDataUpdated() {
 }
 String DisplayStringHandler::GetDisplayString() {
   return mDisplayString;
+}
+String DisplayStringHandler::GetColor() {
+  return mColor;
 }
 String DisplayStringHandler::GetName() {
   return mName;
