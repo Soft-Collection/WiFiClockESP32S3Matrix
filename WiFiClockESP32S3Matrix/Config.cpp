@@ -5,6 +5,7 @@
 {
 	"tz": "EST5EDT,M3.2.0,M11.1.0",
 	"matrix_pin": "14",
+	"color": "0xFFFFFF",
 	"stations": [
 		{
 			"ssid": "your_ssid1",
@@ -31,6 +32,7 @@ Config::Config(void) {
   mStationCount = 0;
   mMyTZ = "";
   mMatrixPin = 14;
+  mColor = "AAAAAA";
   mNewsApiKey = "";
   mShowTime = false;
   mShowDate = false;
@@ -44,11 +46,11 @@ bool Config::begin() {
   //Save_UI8(EEPROM_ADDRESS_INITIALIZED, 255);
   if (Load_UI8(EEPROM_ADDRESS_INITIALIZED) != 25) {
     //------------------------------------------------
-    SaveData("{\"tz\":\"EST5EDT,M3.2.0,M11.1.0\",\"matrix_pin\":\"14\",\"stations\":[{\"ssid\":\"your_ssid1\",\"psk\":\"your_password1\"},{\"ssid\":\"your_ssid2\",\"psk\":\"your_password2\"},{\"ssid\":\"your_ssid3\",\"psk\":\"your_password3\"}],\"news_api_key\": \"your_newsapi.org_api_key\",\"show_time\":\"true\",\"show_date\":\"true\",\"show_weather\":\"true\",\"show_news\":\"true\"}");
+    SaveData("{\"tz\":\"EST5EDT,M3.2.0,M11.1.0\",\"matrix_pin\":\"14\",\"color\":\"AAAAAA\",\"stations\":[{\"ssid\":\"your_ssid1\",\"psk\":\"your_password1\"},{\"ssid\":\"your_ssid2\",\"psk\":\"your_password2\"},{\"ssid\":\"your_ssid3\",\"psk\":\"your_password3\"}],\"news_api_key\": \"your_newsapi.org_api_key\",\"show_time\":\"true\",\"show_date\":\"true\",\"show_weather\":\"true\",\"show_news\":\"true\"}");
     //------------------------------------------------
     Save_UI8(EEPROM_ADDRESS_INITIALIZED, 25);
   }
-  if (!ParseJSONString(LoadData(), mStationSSID, mStationPSK, mStationCount, mMyTZ, mMatrixPin, mNewsApiKey, mShowTime, mShowDate, mShowWeather, mShowNews)) {
+  if (!ParseJSONString(LoadData(), mStationSSID, mStationPSK, mStationCount, mMyTZ, mMatrixPin, mColor, mNewsApiKey, mShowTime, mShowDate, mShowWeather, mShowNews)) {
     Save_UI8(EEPROM_ADDRESS_INITIALIZED, 255);
     ESP.restart();
     return false;
@@ -65,16 +67,23 @@ void Config::Check() {
     if (inputString == "help") {
       Serial.println("1. Use help command to get description of all commands.");
       Serial.println("2. Use get command to get all data in JSON format.");
-      Serial.println("3. Enter the edited JSON string you have got using get command.");
-      Serial.println("4. See your Time Zone here: https://github.com/esp8266/Arduino/blob/master/cores/esp8266/TZ.h");
-      Serial.println("5. Validate your JSON String here: https://jsonlint.com");
-      Serial.println("6. If you want to see News, you must get Newsapi.org API Key here: https://newsapi.org");
+      Serial.println("3. Use reset command to reset all data to its dafault values.");
+      Serial.println("4. Enter the edited JSON string you have got using get command.");
+      Serial.println("5. See your Time Zone here: https://github.com/esp8266/Arduino/blob/master/cores/esp8266/TZ.h");
+      Serial.println("6. Validate your JSON String here: https://jsonlint.com");
+      Serial.println("7. If you want to see News, you must get Newsapi.org API Key here: https://newsapi.org");
     } else if (inputString == "get") {
       Serial.println(LoadData());
+    } else if (inputString == "reset") {
+      Save_UI8(EEPROM_ADDRESS_INITIALIZED, 255);
+      Serial.println("Default values set.");
+      Serial.println("Restarting...");
+      ESP.restart();
     } else {
       String tempData = LoadData();
-      if (!ParseJSONString(inputString, mStationSSID, mStationPSK, mStationCount, mMyTZ, mMatrixPin, mNewsApiKey, mShowTime, mShowDate, mShowWeather, mShowNews)) {
+      if (!ParseJSONString(inputString, mStationSSID, mStationPSK, mStationCount, mMyTZ, mMatrixPin, mColor, mNewsApiKey, mShowTime, mShowDate, mShowWeather, mShowNews)) {
         SaveData(tempData);
+        Serial.println("Wrong data/command provided.");
         Serial.println("Restarting...");
         ESP.restart();
       }
@@ -155,6 +164,9 @@ String Config::GetMyTZ() {
 uint8_t Config::GetMatrixPin() {
   return mMatrixPin;
 }
+String Config::GetColor() {
+  return mColor;
+}
 String Config::GetNewsApiKey(){
   return mNewsApiKey;
 }
@@ -176,7 +188,7 @@ void Config::SaveData(String jsonString) {
 String Config::LoadData() {
   return (Load_String(EEPROM_ADDRESS_DATA, EEPROM_SIZE - 10));
 }
-bool Config::ParseJSONString(String jsonString, String* stationSSID, String* stationPSK, uint8_t& stationCount, String& myTZ, uint8_t& matrixPin, String& newsApiKey, bool& showTime, bool& showDate, bool& showWeather, bool& showNews) {
+bool Config::ParseJSONString(String jsonString, String* stationSSID, String* stationPSK, uint8_t& stationCount, String& myTZ, uint8_t& matrixPin, String& color, String& newsApiKey, bool& showTime, bool& showDate, bool& showWeather, bool& showNews) {
   JsonDocument jd;
   DeserializationError error = deserializeJson(jd, jsonString);
   if (error) {
@@ -197,6 +209,12 @@ bool Config::ParseJSONString(String jsonString, String* stationSSID, String* sta
     return false;
   }
   matrixPin = jd["matrix_pin"].as<uint8_t>();
+  //-----------------------------------------------------------
+  if (!jd["color"]) {
+    Serial.println("No Color information.");
+    return false;
+  }
+  color = jd["color"].as<String>();
   //-----------------------------------------------------------
   if (!jd["stations"]) {
     Serial.println("No Stations information.");

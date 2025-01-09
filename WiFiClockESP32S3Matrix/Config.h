@@ -18,6 +18,7 @@ public:
   //-----------------------------------
   String GetMyTZ();
   uint8_t GetMatrixPin();
+  String GetColor();
   //-----------------------------------
   String GetNewsApiKey();
   //-----------------------------------
@@ -28,7 +29,7 @@ public:
   //-----------------------------------
   void SaveData(String jsonString);
   String LoadData();
-  bool ParseJSONString(String jsonString, String* stationSSID, String* stationPSK, uint8_t& stationCount, String& myTZ, uint8_t& matrixPin, String& newsApiKey, bool& showTime, bool& showDate, bool& showWeather, bool& showNews);
+  bool ParseJSONString(String jsonString, String* stationSSID, String* stationPSK, uint8_t& stationCount, String& myTZ, uint8_t& matrixPin, String& color, String& newsApiKey, bool& showTime, bool& showDate, bool& showWeather, bool& showNews);
 private:
   void Save_I8(int address, int8_t value);
   void Save_UI8(int address, uint8_t value);
@@ -57,6 +58,7 @@ private:
   //-----------------------------------
   String mMyTZ;
   uint8_t mMatrixPin;
+  String mColor;
   //-----------------------------------
   String mNewsApiKey;
   //-----------------------------------

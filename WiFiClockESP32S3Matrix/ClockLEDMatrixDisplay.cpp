@@ -1,5 +1,5 @@
 #include "ClockLEDMatrixDisplay.h"
-#include "CustomFont5x7Fixed.h" //https://github.com/robjen/GFX_fonts/tree/master/GFX_fonts
+#include "CustomFont5x7Fixed.h"  //https://github.com/robjen/GFX_fonts/tree/master/GFX_fonts
 
 ClockLEDMatrixDisplay::ClockLEDMatrixDisplay() {
   mMatrix = NULL;
@@ -43,7 +43,11 @@ void ClockLEDMatrixDisplay::Init() {
   mMatrix = new Adafruit_NeoMatrix(8, 8, Cfg.GetMatrixPin(), NEO_MATRIX_TOP + NEO_MATRIX_RIGHT + NEO_MATRIX_COLUMNS + NEO_MATRIX_PROGRESSIVE, NEO_GRB + NEO_KHZ800);
   //mMatrix = new Adafruit_NeoMatrix(8, 8, Cfg.GetMatrixPin(), NEO_MATRIX_BOTTOM + NEO_MATRIX_RIGHT + NEO_MATRIX_ROWS + NEO_MATRIX_PROGRESSIVE, NEO_GRB + NEO_KHZ800);
   mMatrix->begin();
-  mColor = mMatrix->Color(100, 100, 100);  //White
+  uint32_t tempColor = strtol(Cfg.GetColor().c_str(), NULL, 16);
+  uint8_t tempColorR = (tempColor >> 16) & 0xFF;
+  uint8_t tempColorG = (tempColor >> 8) & 0xFF;
+  uint8_t tempColorB = (tempColor >> 0) & 0xFF;
+  mColor = mMatrix->Color(tempColorR, tempColorG, tempColorB);
   mFirstColumnBackOffset = mMatrix->width();
   mMatrix->setFont(&CustomFont5x7Fixed);
   mMatrix->setTextWrap(false);
@@ -78,9 +82,9 @@ void ClockLEDMatrixDisplay::OnPeriodExpiredScroll() {
   mMatrix->fillScreen(0);
   mMatrix->setCursor(mFirstColumnBackOffset, 7);
   mMatrix->print(stringToDisplay);
-  int16_t x = 0, y = 0; // Text position
-  int16_t x1, y1;       // Top-left corner of bounding box
-  uint16_t w, h;    
+  int16_t x = 0, y = 0;  // Text position
+  int16_t x1, y1;        // Top-left corner of bounding box
+  uint16_t w, h;
   mMatrix->getTextBounds(stringToDisplay, x, y, &x1, &y1, &w, &h);
   int columnsInString = w;
   if (!mIsWaiting) {

@@ -30,7 +30,7 @@ void NewsData::OnPerformUpdate() {
 }
 void NewsData::OnSuccessfulResponse() {
   mDisplayString = "";
-  String tempDisplayString = "News | ";
+  String tempDisplayString = "News <|> ";
   //-----------------------------------------------------------
   if (!(*mJD)["status"]) return;
   if (!(*mJD)["articles"]) return;
@@ -38,7 +38,7 @@ void NewsData::OnSuccessfulResponse() {
   uint8_t articlesCount = (*mJD)["articles"].size();
   for (uint8_t i = 0; i < articlesCount; i++) {
     if (!(*mJD)["articles"][i]["title"]) return;
-    tempDisplayString += (*mJD)["articles"][i]["title"].as<String>() + " | ";
+    tempDisplayString += (*mJD)["articles"][i]["title"].as<String>() + " <|> ";
   }
   //-----------------------------------------------------------
   if (Cfg.GetShowNews()) {
