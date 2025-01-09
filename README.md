@@ -29,6 +29,7 @@ Copy this string to Notepad end edit it:
 3. Set Color (000000 by dafault). Use 6 hexadecimal digits 2 for Red value, 2 for Green value and 2 for Blue value. Use 000000 for default colors.
 4. Set few SSIDs and Passwords. (Not always 3, but up to 5. May be 1 or 2.)
 5. Set Newsapi.org [API Key](https://newsapi.org)
-6. Set true/false values for what to show: Time, Date, Local Weather, News
+6. Set Newspaper name.
+7. Set true/false values for what to show: Time, Date, Local Weather, News
 
 When You have done, just **copy** the edited string and **paste** it in **Serial Monitor** where you typed **get** command and press **enter**
