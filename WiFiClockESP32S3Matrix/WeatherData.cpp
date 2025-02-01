@@ -88,9 +88,15 @@ void WeatherData::OnSuccessfulResponse() {
   String maxWind;
   GetWeatherData(weather, temperature, maxWind);
   if (Cfg.GetShowWeather()) {
-    mDisplayString = String("Weather in ") + mCity + String(" ") + temperature + String("~C ") + weather + String(" Wind ") + maxWind + String("  ");
+    if (xSemaphoreTake(mDisplayStringMutex, portMAX_DELAY) == pdTRUE) {
+      mDisplayString = String("Weather in ") + mCity + String(" ") + temperature + String("~C ") + weather + String(" Wind ") + maxWind + String("  ");
+    }
+    xSemaphoreGive(mDisplayStringMutex);
   } else {
-    mDisplayString = "";
+    if (xSemaphoreTake(mDisplayStringMutex, portMAX_DELAY) == pdTRUE) {
+      mDisplayString = "";
+    }
+    xSemaphoreGive(mDisplayStringMutex);
   }
   //Serial.println(mDisplayString.c_str());
 }

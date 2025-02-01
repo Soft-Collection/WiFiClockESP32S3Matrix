@@ -5,6 +5,7 @@ ClockLEDMatrixDisplay::ClockLEDMatrixDisplay() {
   mMatrix = NULL;
   mDisplayStringManager = NULL;
   mPeriodScroll = new Period(this, 40, true);
+  mMutex = xSemaphoreCreateMutex();
 }
 ClockLEDMatrixDisplay::~ClockLEDMatrixDisplay() {
 }
@@ -63,7 +64,10 @@ void ClockLEDMatrixDisplay::OnPeriodExpiredScroll() {
   String stringToDisplay = (mDisplayStringManager) ? mDisplayStringManager->GetCurrent()->GetDisplayString() : "";
   //------------------------------------------------------------
   mMatrix->fillScreen(0);
-  mMatrix->setCursor(mFirstColumnBackOffset, 7);
+  if (xSemaphoreTake(mMutex, portMAX_DELAY) == pdTRUE) {
+    mMatrix->setCursor(mFirstColumnBackOffset, 7);
+  }
+  xSemaphoreGive(mMutex);
   //------------------------------------------------------------
   uint32_t tempColor = strtol(Cfg.GetColor().c_str(), NULL, 16);
   if (tempColor == 0) tempColor = strtol(mDisplayStringManager->GetCurrent()->GetColor().c_str(), NULL, 16);
@@ -79,7 +83,10 @@ void ClockLEDMatrixDisplay::OnPeriodExpiredScroll() {
   uint16_t w, h;
   mMatrix->getTextBounds(stringToDisplay, x, y, &x1, &y1, &w, &h);
   //------------------------------------------------------------
-  if (--mFirstColumnBackOffset < -w) this->OnEndOfScrolling();
+  if (xSemaphoreTake(mMutex, portMAX_DELAY) == pdTRUE) {
+    if (--mFirstColumnBackOffset < -w) this->OnEndOfScrolling();
+  }
+  xSemaphoreGive(mMutex);
   //------------------------------------------------------------
   mMatrix->show();
 }

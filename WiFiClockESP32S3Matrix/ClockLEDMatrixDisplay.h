@@ -28,6 +28,7 @@ private:
   DisplayStringManager* mDisplayStringManager;
   Adafruit_NeoMatrix* mMatrix;
   int16_t mFirstColumnBackOffset;
+  SemaphoreHandle_t mMutex;
 };
 
 #endif  //ClockLEDMatrixDisplay_h

@@ -27,9 +27,15 @@ void TimeData::OnPerformUpdate() {
   //sprintf(tm, "%02d%c%02d%c%02d ", hour, (showPoints) ? ':' : ' ', minute, (showPoints) ? ':' : ' ', second);
   sprintf(tm, "Time %02d%c%02d%c%02d  ", hour, ':', minute, ':', second);
   if (Cfg.GetShowTime()) {
-    mDisplayString = String(tm);
+    if (xSemaphoreTake(mDisplayStringMutex, portMAX_DELAY) == pdTRUE) {
+      mDisplayString = String(tm);
+    }
+    xSemaphoreGive(mDisplayStringMutex);
   } else {
-    mDisplayString = "";
+    if (xSemaphoreTake(mDisplayStringMutex, portMAX_DELAY) == pdTRUE) {
+      mDisplayString = "";
+    }
+    xSemaphoreGive(mDisplayStringMutex);
   }
   //Serial.println(mDisplayString.c_str());
 }

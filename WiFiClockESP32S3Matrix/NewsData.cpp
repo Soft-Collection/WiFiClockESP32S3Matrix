@@ -29,7 +29,10 @@ void NewsData::OnPerformUpdate() {
   mPeriodResponse->Reset();
 }
 void NewsData::OnSuccessfulResponse() {
-  mDisplayString = "";
+  if (xSemaphoreTake(mDisplayStringMutex, portMAX_DELAY) == pdTRUE) {
+    mDisplayString = "";
+  }
+  xSemaphoreGive(mDisplayStringMutex);
   String tempDisplayString = "News >>> ";
   //-----------------------------------------------------------
   if (!(*mJD)["status"]) return;
@@ -42,9 +45,15 @@ void NewsData::OnSuccessfulResponse() {
   }
   //-----------------------------------------------------------
   if (Cfg.GetShowNews()) {
-    mDisplayString = tempDisplayString;
+    if (xSemaphoreTake(mDisplayStringMutex, portMAX_DELAY) == pdTRUE) {
+      mDisplayString = tempDisplayString;
+    }
+    xSemaphoreGive(mDisplayStringMutex);
   } else {
-    mDisplayString = "";
+    if (xSemaphoreTake(mDisplayStringMutex, portMAX_DELAY) == pdTRUE) {
+      mDisplayString = "";
+    }
+    xSemaphoreGive(mDisplayStringMutex);
   }
   //Serial.println(mDisplayString.c_str());
 }

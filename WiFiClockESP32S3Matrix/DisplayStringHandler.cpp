@@ -10,6 +10,8 @@ DisplayStringHandler::DisplayStringHandler(uint32_t tryToUpdateIntervalInMS, uin
   mNextName = String(nextName);
   mPeriodUpdate = new Period(this, tryToUpdateIntervalInMS, true);
   mPeriodUpdate->AddOnPeriodExpiredHandler(DisplayStringHandler::OnPeriodExpiredStaticUpdate);
+  mDisplayStringMutex = xSemaphoreCreateMutex();
+  mColorMutex = xSemaphoreCreateMutex();
 }
 DisplayStringHandler::~DisplayStringHandler() {
   if (mPeriodUpdate) {
@@ -24,10 +26,20 @@ bool DisplayStringHandler::IsDataUpdated() {
   return false;
 }
 String DisplayStringHandler::GetDisplayString() {
-  return mDisplayString;
+  String retVal;
+  if (xSemaphoreTake(mDisplayStringMutex, portMAX_DELAY) == pdTRUE) {
+    retVal = mDisplayString;
+  }
+  xSemaphoreGive(mDisplayStringMutex);
+  return retVal;
 }
 String DisplayStringHandler::GetColor() {
-  return mColor;
+  String retVal;
+  if (xSemaphoreTake(mColorMutex, portMAX_DELAY) == pdTRUE) {
+    retVal = mColor;
+  }
+  xSemaphoreGive(mColorMutex);
+  return retVal;
 }
 String DisplayStringHandler::GetName() {
   return mName;

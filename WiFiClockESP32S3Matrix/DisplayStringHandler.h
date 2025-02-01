@@ -26,6 +26,8 @@ protected:
   String mColor;
   String mName;
   String mNextName;
+  SemaphoreHandle_t mDisplayStringMutex;
+  SemaphoreHandle_t mColorMutex;  
 };
 
 #endif  //DisplayStringHandler_h

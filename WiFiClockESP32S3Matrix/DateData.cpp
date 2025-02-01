@@ -26,9 +26,15 @@ void DateData::OnPerformUpdate() {
   int8_t year = localtime(&now)->tm_year;
   sprintf(dt, "Date %02d/%02d/%04d  ", day, month, year + 1900);
   if (Cfg.GetShowDate()) {
-    mDisplayString = String(dt);
+    if (xSemaphoreTake(mDisplayStringMutex, portMAX_DELAY) == pdTRUE) {
+      mDisplayString = String(dt);
+    }
+    xSemaphoreGive(mDisplayStringMutex);
   } else {
-    mDisplayString = "";
+    if (xSemaphoreTake(mDisplayStringMutex, portMAX_DELAY) == pdTRUE) {
+      mDisplayString = "";
+    }
+    xSemaphoreGive(mDisplayStringMutex);
   }
   //Serial.println(mDisplayString.c_str());
 }
