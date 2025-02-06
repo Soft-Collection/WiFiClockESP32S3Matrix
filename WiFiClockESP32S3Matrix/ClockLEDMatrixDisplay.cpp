@@ -4,7 +4,6 @@
 ClockLEDMatrixDisplay::ClockLEDMatrixDisplay() {
   mMatrix = NULL;
   mDisplayStringManager = NULL;
-  mPeriodScroll = new Period(this, 40, true);
   mMutex = xSemaphoreCreateMutex();
 }
 ClockLEDMatrixDisplay::~ClockLEDMatrixDisplay() {
@@ -42,10 +41,10 @@ void ClockLEDMatrixDisplay::Init() {
   mMatrix->setFont(&CustomFont5x7Fixed);
   mMatrix->setTextWrap(false);
   mMatrix->setBrightness(10);
-  mPeriodScroll->AddOnPeriodExpiredHandler(ClockLEDMatrixDisplay::OnPeriodExpiredStaticScroll);
 }
 void ClockLEDMatrixDisplay::Check() {
-  mPeriodScroll->Check(millis());
+  OnOnePositionScrolling();
+  vTaskDelay(pdMS_TO_TICKS(40));
 }
 void ClockLEDMatrixDisplay::SetDisplayStringManager(DisplayStringManager* displayStringManager) {
   mDisplayStringManager = displayStringManager;
@@ -56,11 +55,7 @@ void ClockLEDMatrixDisplay::OnEndOfScrolling() {
     mDisplayStringManager->SwitchToNext();
   }
 }
-void ClockLEDMatrixDisplay::OnPeriodExpiredStaticScroll(void* instance) {
-  ClockLEDMatrixDisplay* clmd = (ClockLEDMatrixDisplay*)instance;
-  if (clmd != NULL) clmd->OnPeriodExpiredScroll();
-}
-void ClockLEDMatrixDisplay::OnPeriodExpiredScroll() {
+void ClockLEDMatrixDisplay::OnOnePositionScrolling() {
   String stringToDisplay = (mDisplayStringManager) ? mDisplayStringManager->GetCurrent()->GetDisplayString() : "";
   //------------------------------------------------------------
   mMatrix->fillScreen(0);

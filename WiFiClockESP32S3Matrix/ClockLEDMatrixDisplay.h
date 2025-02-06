@@ -6,7 +6,6 @@
 #include <Adafruit_NeoMatrix.h>
 #include <Adafruit_NeoPixel.h>
 #include "Config.h"
-#include "Period.h"
 #include "DisplayStringHandler.h"
 #include "DisplayStringManager.h"
 
@@ -19,12 +18,10 @@ public:
   void SetDisplayStringManager(DisplayStringManager* displayStringManager);
 private:
   void OnEndOfScrolling();
-  static void OnPeriodExpiredStaticScroll(void* instance);
-  void OnPeriodExpiredScroll();
+  void OnOnePositionScrolling();
   static void OnDisplayStringHandlerChangedStatic(void* instance);
   void OnDisplayStringHandlerChanged();
 private:
-  Period* mPeriodScroll;
   DisplayStringManager* mDisplayStringManager;
   Adafruit_NeoMatrix* mMatrix;
   int16_t mFirstColumnBackOffset;

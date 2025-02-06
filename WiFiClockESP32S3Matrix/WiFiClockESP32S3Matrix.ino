@@ -22,7 +22,8 @@ void setup() {
   clmd.Init();
   clmd.SetDisplayStringManager(&dsm);  
   //---------------------------------------------------
-  xTaskCreate(
+  // This variant of task creation can also specify on which core it will be run (only relevant for multi-core ESPs)
+  xTaskCreatePinnedToCore(
     TaskLeds, "Task Leds"  // A name just for humans
     ,
     8192  // The stack size can be checked by calling `uxHighWaterMark = uxTaskGetStackHighWaterMark(NULL);`
@@ -32,6 +33,8 @@ void setup() {
     2  // High Priority
     ,
     NULL  // Task handle is not used here - simply pass NULL
+    ,
+    0  // Core on which the task will run
   );
   //---------------------------------------------------
   // This variant of task creation can also specify on which core it will be run (only relevant for multi-core ESPs)
@@ -48,6 +51,8 @@ void setup() {
     ,
     TASK_RUNNING_CORE  // Core on which the task will run
   );
+  //---------------------------------------------------
+  vTaskDelete(NULL);  //Delete "setup and loop" task
 }
 void loop() {
 }
